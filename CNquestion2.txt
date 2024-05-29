@@ -1,0 +1,63 @@
+Write a Socket program to implement Day Time Server-client using TCP/UDP protocol:
+Ans: -
+To perform this at first, we have to create two separate Java files on our directory one for Server and 
+other one for the Client with the help of ‘vim’ editor. Then we can write the code to setup 
+TCPDayTimeServer and TCPDayTimeClient locally.
+
+ 
+TCPDayTimeServer:
+         import java.io.*;
+         import java.net.*;
+         import java.util.Date;
+
+         public class TCPDayTimeServer {
+            public static void main(String[] args) {
+              try (ServerSocket serverSocket = new ServerSocket(6789)) {
+                 System.out.println("Day Time Server is listening on port 6789");
+                 while (true) {
+                   try (Socket socket = serverSocket.accept();
+                     PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+                     String dateTime = new Date().toString();
+                     System.out.println("Client connected, sending date and time: " + dateTime);
+                     out.println(dateTime);
+                   } catch (IOException e) {
+                     System.out.println("Server exception: " + e.getMessage());
+                     e.printStackTrace();
+                   
+                   }
+                  }
+                 } catch (IOException e) {
+                    System.out.println("Could not listen on port 6789");
+                    e.printStackTrace();
+                 }
+                }
+               }
+
+
+TCPDayTimeClient:
+
+           import java.io.*;
+           import java.net.*;
+
+           public class TCPDayTimeClient {
+              public static void main(String[] args) {
+                String hostname = "localhost";
+                int port = 6789;
+
+                try (Socket socket = new Socket(hostname, port);
+                  BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+
+                  String dateTime = in.readLine();
+                  System.out.println("Current date and time from server: " + dateTime);
+
+               } catch (UnknownHostException ex) {
+                  System.out.println("Server not found: " + ex.getMessage());
+               } catch (IOException ex) {
+                  System.out.println("I/O error: " + ex.getMessage());
+               }
+              }
+             }
+
+
+output
+
